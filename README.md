@@ -45,18 +45,12 @@ No card. No checkout. No account needed.
 
 ```
 fastgift/
-├── server.js              # Express backend + Fast Stack integration
+├── server.js              
 ├── package.json
-├── .env.example           # Environment variable template
+├── .env.example
 ├── .gitignore
 ├── public/
-│   └── index.html         # Full frontend (3 screens)
-├── screenshots/
-│   ├── landing.png
-│   ├── form.png
-│   ├── agent.png
-│   ├── quote.png
-│   └── allramp.png
+│   └── index.html        
 └── README.md
 ```
 
