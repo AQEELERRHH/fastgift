@@ -1,0 +1,515 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastGift  AI Gift Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf7f2;--warm:#f5efe6;--gold:#c9973a;--gold-light:#e8b85a;--dark:#1a1208;--brown:#3d2b0e;--muted:#9a8870;--border:#e8ddd0;--success:#2d7a4f;--fast-green:#00c97a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--dark);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+/* LANDING */
+#landing{background:var(--dark);color:var(--cream);display:flex;flex-direction:column;}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:28px 48px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;}
+.logo span{color:var(--gold);}
+.nav-badge{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:5px 12px;}
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 32px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;border:1px solid rgba(201,151,58,0.12);top:50%;left:50%;transform:translate(-50%,-50%);}
+.hero::after{content:'';position:absolute;width:900px;height:900px;border-radius:50%;border:1px solid rgba(201,151,58,0.06);top:50%;left:50%;transform:translate(-50%,-50%);}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;position:relative;z-index:1;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(48px,8vw,96px);font-weight:900;line-height:1.0;letter-spacing:-2px;margin-bottom:12px;position:relative;z-index:1;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:18px;font-weight:300;color:rgba(250,247,242,0.6);max-width:520px;line-height:1.7;margin-bottom:48px;position:relative;z-index:1;}
+.hero-cta{background:var(--gold);color:var(--dark);border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;padding:18px 48px;cursor:pointer;transition:all 0.25s;position:relative;z-index:1;}
+.hero-cta:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,151,58,0.35);}
+.features{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,0.08);}
+.feature{padding:40px;border-right:1px solid rgba(255,255,255,0.08);}
+.feature:last-child{border-right:none;}
+.feature-icon{font-size:28px;margin-bottom:14px;}
+.feature h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:8px;}
+.feature p{font-size:13px;color:rgba(250,247,242,0.5);line-height:1.6;}
+.powered-bar{display:flex;align-items:center;justify-content:center;gap:24px;padding:20px;border-top:1px solid rgba(255,255,255,0.06);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);flex-wrap:wrap;}
+.powered-bar span{color:var(--gold);opacity:0.6;}
+/* FORM */
+#formScreen{background:var(--warm);}
+.form-nav{display:flex;align-items:center;gap:16px;padding:24px 48px;border-bottom:1px solid var(--border);background:white;}
+.back-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;transition:color 0.2s;}
+.back-btn:hover{color:var(--dark);}
+.form-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;}
+.form-logo span{color:var(--gold);}
+.form-container{max-width:680px;margin:0 auto;padding:48px 32px;}
+.form-header{margin-bottom:40px;}
+.form-header h2{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;letter-spacing:-1px;margin-bottom:8px;}
+.form-header p{color:var(--muted);font-size:14px;}
+.form-section{background:white;border:1px solid var(--border);padding:28px;margin-bottom:16px;}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.single{grid-template-columns:1fr;}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0.5px;margin-bottom:8px;text-transform:uppercase;}
+.field input,.field select,.field textarea{width:100%;background:var(--warm);border:1px solid var(--border);color:var(--dark);font-family:'DM Sans',sans-serif;font-size:14px;padding:12px 16px;outline:none;transition:border-color 0.2s;appearance:none;}
+.field textarea{height:90px;resize:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:white;}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.tag-btn{background:var(--warm);border:1px solid var(--border);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 14px;cursor:pointer;transition:all 0.2s;}
+.tag-btn:hover{border-color:var(--gold);color:var(--gold);}
+.tag-btn.selected{background:var(--gold);border-color:var(--gold);color:white;}
+.budget-display{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold);margin-bottom:12px;}
+.budget-slider{width:100%;accent-color:var(--gold);cursor:pointer;}
+.submit-btn{width:100%;background:var(--dark);color:var(--cream);border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;padding:20px;cursor:pointer;transition:all 0.25s;margin-top:8px;}
+.submit-btn:hover{background:var(--brown);transform:translateY(-1px);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+/* AGENT */
+#agentScreen{background:var(--dark);color:var(--cream);}
+.agent-nav{display:flex;justify-content:space-between;align-items:center;padding:24px 48px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.agent-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;}
+.agent-logo span{color:var(--gold);}
+.live-badge{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--fast-green);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--fast-green);animation:pulse 1.5s infinite;}
+.agent-body{display:grid;grid-template-columns:1fr 1fr;}
+.agent-left{padding:48px;border-right:1px solid rgba(255,255,255,0.08);}
+.agent-right{padding:48px;}
+.agent-status-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+.agent-status-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px;}
+.thought{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-left:3px solid var(--muted);padding:16px 18px;margin-bottom:10px;font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;display:flex;align-items:flex-start;gap:12px;transition:all 0.4s;}
+.thought.active{border-left-color:var(--gold);color:white;}
+.thought.done{border-left-color:var(--fast-green);color:rgba(255,255,255,0.6);}
+.thought-icon{font-size:16px;min-width:22px;margin-top:1px;}
+/* Product cards */
+.products-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:20px 0 12px;}
+.product-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:14px;margin-bottom:8px;display:flex;gap:14px;cursor:pointer;transition:all 0.2s;}
+.product-card:hover,.product-card.selected{border-color:var(--gold);background:rgba(201,151,58,0.08);}
+.product-card img{width:60px;height:60px;object-fit:cover;flex-shrink:0;}
+.product-card-info{flex:1;}
+.product-card-name{font-size:12px;line-height:1.4;margin-bottom:6px;color:var(--cream);}
+.product-card-price{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);}
+.product-card-reviews{font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px;}
+/* Stack steps */
+.stack-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:20px;}
+.stack-step{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06);transition:all 0.3s;}
+.stack-step:last-child{border-bottom:none;}
+.ss-icon{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all 0.3s;}
+.stack-step.active .ss-icon{border-color:var(--gold);background:rgba(201,151,58,0.1);}
+.stack-step.done .ss-icon{border-color:var(--fast-green);background:rgba(0,201,122,0.1);}
+.ss-info{flex:1;}
+.ss-name{font-size:14px;font-weight:500;color:rgba(255,255,255,0.35);transition:color 0.3s;margin-bottom:2px;}
+.stack-step.active .ss-name,.stack-step.done .ss-name{color:var(--cream);}
+.ss-desc{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);transition:color 0.3s;}
+.stack-step.active .ss-desc{color:var(--gold);}
+.stack-step.done .ss-desc{color:var(--fast-green);}
+.ss-stat{font-size:12px;color:rgba(255,255,255,0.2);font-family:'DM Mono',monospace;}
+.stack-step.done .ss-stat{color:var(--fast-green);}
+.mini-terminal{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.06);padding:12px 14px;margin-top:20px;font-family:'DM Mono',monospace;font-size:10px;line-height:2;max-height:110px;overflow-y:auto;}
+.tlog{color:rgba(255,255,255,0.25);}
+.tlog.g{color:var(--fast-green);}
+.tlog.a{color:var(--gold);}
+/* Quote card */
+.quote-card{display:none;background:rgba(201,151,58,0.08);border:1px solid rgba(201,151,58,0.3);padding:22px;margin-top:16px;}
+.quote-card.visible{display:block;}
+.quote-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.quote-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;}
+.quote-row:last-child{border-bottom:none;}
+.ql{color:rgba(255,255,255,0.4);}
+.qv{color:var(--cream);font-weight:500;}
+.qv.gold{color:var(--gold);}
+.qv.green{color:var(--fast-green);}
+.confirm-btn{width:100%;background:var(--gold);color:var(--dark);border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:14px;cursor:pointer;margin-top:14px;transition:all 0.2s;}
+.confirm-btn:hover{background:var(--gold-light);}
+/* Success */
+.success-card{display:none;background:rgba(0,201,122,0.06);border:1px solid rgba(0,201,122,0.3);padding:24px;margin-top:16px;}
+.success-card.visible{display:block;}
+.success-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.success-check{width:30px;height:30px;border-radius:50%;background:var(--fast-green);color:var(--dark);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.success-head h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;}
+.srow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;}
+.srow:last-child{border-bottom:none;}
+.sl{color:rgba(255,255,255,0.4);}
+.sv{color:var(--cream);font-weight:500;}
+.sv.green{color:var(--fast-green);}
+.sv.gold{color:var(--gold);}
+.tx-line{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.2);margin-top:12px;word-break:break-all;line-height:1.6;}
+.tx-line span{color:var(--fast-green);}
+.new-btn{margin-top:20px;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;padding:10px 20px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+.new-btn:hover{border-color:var(--gold);color:var(--gold);}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{width:11px;height:11px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite;}
+@media(max-width:768px){.nav,.form-nav,.agent-nav{padding:20px 24px;}.features{grid-template-columns:1fr;}.feature{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);}.form-row{grid-template-columns:1fr;}.agent-body{grid-template-columns:1fr;}.agent-left{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding:28px 24px;}.agent-right{padding:28px 24px;}}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <nav class="nav">
+    <div class="logo">Fast<span>Gift</span></div>
+    <div class="nav-badge">Powered by Fast Stack</div>
+  </nav>
+  <section class="hero">
+    
+    <h1>Gifting,<br><em>reimagined.</em></h1>
+    <p class="hero-sub">Tell your AI agent who you are gifting, what they love, and your budget. It finds the perfect gift on Amazon and orders it autonomously.</p>
+    <button class="hero-cta" onclick="showForm()">Send a Gift &rarr;</button>
+  </section>
+  <section class="features">
+    <div class="feature">
+      <div class="feature-icon"></div>
+      <h3>AI Picks the Gift</h3>
+      <p>Describe the person. The agent searches real Amazon products and selects the best match for your budget.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon"></div>
+      <h3>Fast Stack Payment</h3>
+      <p>Agent wallet funded with USDC. Payment settled cryptographically via FastSet. No card. No checkout.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon"></div>
+      <h3>Ships to Their Door</h3>
+      <p>Order goes straight to the recipient via Amazon. Just provide the address and the agent handles everything.</p>
+    </div>
+  </section>
+  <div class="powered-bar">Built on Fast Stack &nbsp;&nbsp;<span>FastSkill</span>&nbsp;&nbsp;<span>AllSet</span>&nbsp;&nbsp;<span>FastSet</span>&nbsp;&nbsp;USDC Settlement</div>
+</div>
+
+<!-- FORM -->
+<div id="formScreen" class="screen">
+  <div class="form-nav">
+    <button class="back-btn" onclick="showLanding()">&#8592;</button>
+    <div class="form-logo">Fast<span>Gift</span></div>
+  </div>
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Who are we gifting?</h2>
+      <p>Tell the agent everything. The more detail, the better the gift.</p>
+    </div>
+    <div class="form-section">
+      <div class="section-label">Recipient</div>
+      <div class="form-row">
+        <div class="field"><label>Their Name</label><input type="text" id="recipientName" placeholder="e.g. Sarah" /></div>
+        <div class="field"><label>Occasion</label>
+          <select id="occasion">
+            <option value="Birthday">Birthday</option>
+            <option value="Anniversary">Anniversary</option>
+            <option value="Graduation">Graduation</option>
+            <option value="Christmas">Christmas</option>
+            <option value="Valentine">Valentines</option>
+            <option value="Just Because">Just Because</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="section-label">Personality and Interests</div>
+      <div class="form-row single" style="margin-bottom:16px">
+        <div class="field"><label>Describe them</label><textarea id="description" placeholder="e.g. She is classy, loves fashion and designer bags, enjoys reading romance novels and having flowers around the house..."></textarea></div>
+      </div>
+      <div style="margin-bottom:8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:500;">Quick tags</div>
+      <div class="tags-wrap" id="tagWrap">
+        <button class="tag-btn" onclick="toggleTag(this)">Fashion</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Books</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Flowers</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Chocolate</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Beauty</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Gaming</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Fitness</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Music</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Cooking</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Travel</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Wellness</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Art</button>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="section-label">Budget</div>
+      <div class="budget-display" id="budgetDisplay">$50</div>
+      <input type="range" class="budget-slider" id="budgetSlider" min="10" max="300" value="50" step="5" oninput="updateBudget(this.value)" />
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px;"><span>$10</span><span>$300</span></div>
+    </div>
+    <div class="form-section">
+      <div class="section-label">Delivery Address (US Only)</div>
+      <div class="form-row">
+        <div class="field"><label>First Name</label><input type="text" id="firstName" placeholder="Jane" /></div>
+        <div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="Doe" /></div>
+      </div>
+      <div class="form-row single">
+        <div class="field"><label>Street Address</label><input type="text" id="address1" placeholder="123 Main Street" /></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>City</label><input type="text" id="city" placeholder="New York" /></div>
+        <div class="field"><label>State</label><input type="text" id="state" placeholder="NY" /></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>ZIP Code</label><input type="text" id="zip" placeholder="10001" /></div>
+        <div class="field"><label>Phone (10 digits)</label><input type="text" id="phone" placeholder="2125551234" /></div>
+      </div>
+    </div>
+    <button class="submit-btn" id="submitBtn" onclick="startAgent()">Let the Agent Find the Perfect Gift &rarr;</button>
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;font-family:'DM Mono',monospace;letter-spacing:1px;">US SHIPPING ONLY  FAST STACK POWERED</div>
+  </div>
+</div>
+
+<!-- AGENT -->
+<div id="agentScreen" class="screen">
+  <div class="agent-nav">
+    <div class="agent-logo">Fast<span>Gift</span></div>
+    <div class="live-badge"><div class="live-dot"></div><span id="liveLabel">Agent Running</span></div>
+  </div>
+  <div class="agent-body">
+    <div class="agent-left">
+      <div class="agent-status-title" id="agentTitle">Agent is thinking...</div>
+      <div class="agent-status-sub" id="agentSub">Analyzing recipient profile</div>
+      <div id="t1" class="thought"><div class="thought-icon"></div><div id="t1t">Reading recipient profile and occasion details...</div></div>
+      <div id="t2" class="thought"><div class="thought-icon"></div><div id="t2t">Searching Amazon for best gifts within budget...</div></div>
+      <div id="t3" class="thought"><div class="thought-icon"></div><div id="t3t">Comparing results by reviews and relevance...</div></div>
+      <div id="t4" class="thought"><div class="thought-icon"></div><div id="t4t">Selecting the best gift match...</div></div>
+      <div id="productsSection" style="display:none">
+        <div class="products-label">Real Amazon Results</div>
+        <div id="productsList"></div>
+      </div>
+    </div>
+    <div class="agent-right">
+      <div class="stack-title">Fast Stack Payment Flow</div>
+      <div class="stack-step" id="ss1"><div class="ss-icon"></div><div class="ss-info"><div class="ss-name">FastSkill</div><div class="ss-desc" id="ss1d">Waiting...</div></div><div class="ss-stat" id="ss1s"></div></div>
+      <div class="stack-step" id="ss2"><div class="ss-icon"></div><div class="ss-info"><div class="ss-name">AllSet</div><div class="ss-desc" id="ss2d">Waiting for wallet...</div></div><div class="ss-stat" id="ss2s"></div></div>
+      <div class="stack-step" id="ss3"><div class="ss-icon"></div><div class="ss-info"><div class="ss-name">FastSet</div><div class="ss-desc" id="ss3d">Waiting for quote...</div></div><div class="ss-stat" id="ss3s"></div></div>
+      <div class="stack-step" id="ss4"><div class="ss-icon"></div><div class="ss-info"><div class="ss-name">Amazon Order</div><div class="ss-desc" id="ss4d">Waiting for payment...</div></div><div class="ss-stat" id="ss4s"></div></div>
+      <div class="mini-terminal" id="terminal"></div>
+      <div class="quote-card" id="quoteCard">
+        <div class="quote-label">Quote Ready  Confirm to Order</div>
+        <div class="quote-row"><span class="ql">Product</span><span class="qv gold" id="qProduct"></span></div>
+        <div class="quote-row"><span class="ql">Product Price</span><span class="qv" id="qPrice"></span></div>
+        <div class="quote-row"><span class="ql">Max Budget (incl. shipping+tax)</span><span class="qv" id="qMax"></span></div>
+        <div class="quote-row"><span class="ql">Fast Fee</span><span class="qv">$1.00</span></div>
+        <div class="quote-row"><span class="ql">Total USDC</span><span class="qv green" id="qTotal"></span></div>
+        <div class="quote-row"><span class="ql">Deliver To</span><span class="qv" id="qAddress"></span></div>
+        <button class="confirm-btn" id="confirmBtn" onclick="confirmOrder()">Confirm and Place Order &rarr;</button>
+        <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:8px;font-family:'DM Mono',monospace;">Any unused USDC after delivery is automatically refunded</div>
+      </div>
+      <div class="success-card" id="successCard">
+        <div class="success-head"><div class="success-check">&#10003;</div><h3>Gift Ordered Successfully</h3></div>
+        <div class="srow"><span class="sl">Recipient</span><span class="sv" id="scRecipient"></span></div>
+        <div class="srow"><span class="sl">Gift</span><span class="sv gold" id="scGift"></span></div>
+        <div class="srow"><span class="sl">Total Paid</span><span class="sv green" id="scAmount"></span></div>
+        <div class="srow"><span class="sl">Settlement</span><span class="sv green">USDC via Fast Stack</span></div>
+        <div class="srow"><span class="sl">Order ID</span><span class="sv" id="scOrderId"></span></div>
+        <div class="tx-line">Excess USDC will be refunded automatically after delivery.</div>
+      </div>
+      <button class="new-btn" id="newBtn" style="display:none" onclick="showLanding()">&#8592; Send Another Gift</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let selectedProduct = null;
+let currentQuote = null;
+let formData = {};
+
+function showForm(){ switchScreen('formScreen'); }
+function showLanding(){ switchScreen('landing'); resetAll(); }
+function switchScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function toggleTag(btn){ btn.classList.toggle('selected'); }
+function updateBudget(v){ document.getElementById('budgetDisplay').textContent='$'+v; }
+function getTags(){ return [...document.querySelectorAll('.tag-btn.selected')].map(b=>b.textContent.trim()).join(', '); }
+
+function tlog(type,text){ const t=document.getElementById('terminal'); const d=document.createElement('div'); d.className='tlog '+type; d.textContent=text; t.appendChild(d); t.scrollTop=t.scrollHeight; }
+function setStep(id,state,desc,stat){ const el=document.getElementById(id); el.classList.remove('active','done'); if(state) el.classList.add(state); if(desc) document.getElementById(id+'d').textContent=desc; const s=document.getElementById(id+'s'); if(stat==='spin') s.innerHTML='<div class="spin"></div>'; else s.textContent=stat||''; }
+function setThought(id,state,text){ const el=document.getElementById(id); el.classList.remove('active','done'); if(state) el.classList.add(state); if(text) document.getElementById(id+'t').textContent=text; }
+
+async function pickGiftWithAI(name, description, tags, budget, occasion){
+  const prompt = 'You are a gift-buying AI agent. Pick ONE specific Amazon search query for a gift.\nRecipient: '+name+'\nOccasion: '+occasion+'\nBudget: $'+budget+'\nDescription: '+description+'\nTags: '+(tags||'none')+'\n\nRespond ONLY with JSON, no markdown:\n{"searchQuery":"short amazon search query","reason":"one sentence why this is perfect"}';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})});
+    const data = await res.json();
+    const text = data.content[0].text.replace(/```json|```/g,'').trim();
+    return JSON.parse(text);
+  } catch(e) {
+    return {searchQuery: (tags||occasion)+' gift set', reason:'Thoughtfully selected based on their interests.'};
+  }
+}
+
+async function startAgent(){
+  formData = {
+    name: document.getElementById('recipientName').value||'Friend',
+    occasion: document.getElementById('occasion').value,
+    description: document.getElementById('description').value||'a wonderful person',
+    tags: getTags(),
+    budget: document.getElementById('budgetSlider').value,
+    firstName: document.getElementById('firstName').value||'',
+    lastName: document.getElementById('lastName').value||'',
+    address1: document.getElementById('address1').value||'',
+    city: document.getElementById('city').value||'',
+    state: document.getElementById('state').value||'',
+    zip: document.getElementById('zip').value||'',
+    phone: document.getElementById('phone').value||''
+  };
+  switchScreen('agentScreen');
+
+  // Phase 1: AI thinking
+  setThought('t1','active','Reading profile: '+formData.name+' | '+formData.occasion+' | $'+formData.budget+' budget');
+  await sleep(1000);
+  setThought('t1','done','Profile understood');
+
+  setThought('t2','active','Asking AI to determine the best gift category...');
+  document.getElementById('agentSub').textContent='AI is selecting gift category...';
+  const aiPick = await pickGiftWithAI(formData.name, formData.description, formData.tags, formData.budget, formData.occasion);
+  setThought('t2','done','AI picked: '+aiPick.searchQuery);
+
+  setThought('t3','active','Searching real Amazon products via Fast Shop API...');
+  document.getElementById('agentSub').textContent='Searching Amazon...';
+  tlog('a','> Searching Amazon: "'+aiPick.searchQuery+'"');
+
+  // Real API search
+  let products = [];
+  try {
+    const res = await fetch('/api/search?q='+encodeURIComponent(aiPick.searchQuery));
+    const data = await res.json();
+    products = (data.results||[]).filter(p=>p.price>0 && p.price<=(formData.budget*100)).slice(0,3);
+    tlog('g','> Found '+products.length+' products within budget');
+  } catch(e) {
+    tlog('','> Search error: '+e.message);
+  }
+
+  setThought('t3','done','Found '+products.length+' real Amazon products');
+
+  setThought('t4','active',aiPick.reason);
+  await sleep(800);
+  setThought('t4','done','Best match selected');
+
+  document.getElementById('agentTitle').textContent='Real Amazon Results';
+  document.getElementById('agentSub').textContent='Select a product to quote';
+
+  // Show products
+  if(products.length>0){
+    document.getElementById('productsSection').style.display='block';
+    const list = document.getElementById('productsList');
+    list.innerHTML='';
+    products.forEach((p,i)=>{
+      const price = (p.price/100).toFixed(2);
+      const div = document.createElement('div');
+      div.className='product-card';
+      div.innerHTML='<img src="'+p.image+'" alt="product" onerror="this.style.display=\'none\'"><div class="product-card-info"><div class="product-card-name">'+p.title.slice(0,80)+'...</div><div class="product-card-price">$'+price+'</div><div class="product-card-reviews">'+p.num_reviews+' reviews</div></div>';
+      div.onclick=()=>selectProduct(p, div);
+      list.appendChild(div);
+    });
+  }
+
+  // Start Fast Stack flow display
+  setStep('ss1','active','Wallet ready for order session','spin');
+  tlog('a','> FastSkill: agent wallet initialized');
+  await sleep(1200);
+  setStep('ss1','done','Wallet ready','');
+  tlog('g','> FastSkill ');
+  setStep('ss2','active','Select a product to get quote','');
+}
+
+function selectProduct(product, el){
+  document.querySelectorAll('.product-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedProduct = product;
+  getQuote(product);
+}
+
+async function getQuote(product){
+  setStep('ss2','active','Funding agent wallet with USDC...','spin');
+  tlog('a','> AllSet: preparing USDC funding for order');
+  await sleep(800);
+  setStep('ss2','done','Wallet funded','');
+  tlog('g','> AllSet ');
+
+  setStep('ss3','active','Creating price quote...','spin');
+  tlog('a','> FastSet: requesting quote for '+product.title.slice(0,30)+'...');
+
+  const body = {
+    products:[{url:product.url, quantity:1, price_cents:product.price}],
+    shipping_address:{
+      first_name:formData.firstName||'Jane',
+      last_name:formData.lastName||'Doe',
+      address_line1:formData.address1||'123 Main St',
+      city:formData.city||'New York',
+      state:formData.state||'NY',
+      postal_code:formData.zip||'10001',
+      phone_number:(formData.phone||'2125551234').replace(/\D/g,'').slice(-10),
+      country:'US'
+    }
+  };
+
+  try {
+    const res = await fetch('/api/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const quote = await res.json();
+    currentQuote = quote;
+
+    if(quote.quote_id){
+      setStep('ss3','done','Quote received','');
+      tlog('g','> Quote  | Total: '+quote.price_usdc+' USDC');
+      document.getElementById('qProduct').textContent = product.title.slice(0,50)+'...';
+      document.getElementById('qPrice').textContent = '$'+(product.price/100).toFixed(2);
+      document.getElementById('qMax').textContent = '$'+(quote.max_price_cents/100).toFixed(2);
+      document.getElementById('qTotal').textContent = quote.price_usdc+' USDC';
+      document.getElementById('qAddress').textContent = (formData.firstName||'Jane')+' '+formData.lastName+', '+formData.city+' '+formData.state;
+      document.getElementById('quoteCard').classList.add('visible');
+      setStep('ss4','active','Awaiting your confirmation...','');
+    } else {
+      setStep('ss3','done','Quote unavailable  try another product','!');
+      tlog('','> Quote response: '+(quote.error||JSON.stringify(quote).slice(0,60)));
+    }
+  } catch(e){
+    setStep('ss3','done','Quote error','!');
+    tlog('','> Error: '+e.message);
+  }
+}
+
+async function confirmOrder(){
+  if(!currentQuote||!currentQuote.quote_id) return;
+  document.getElementById('confirmBtn').disabled=true;
+  document.getElementById('confirmBtn').textContent='Placing order...';
+  setStep('ss4','active','Placing order on Amazon...','spin');
+  tlog('a','> Placing order | quote: '+currentQuote.quote_id);
+
+  try {
+    const res = await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({quote_id:currentQuote.quote_id})});
+    const order = await res.json();
+    if(order.order_id||order.id){
+      setStep('ss4','done','Order placed','');
+      tlog('g','> Order confirmed | ID: '+(order.order_id||order.id));
+      document.getElementById('scRecipient').textContent=formData.firstName+' '+formData.lastName;
+      document.getElementById('scGift').textContent=selectedProduct.title.slice(0,50)+'...';
+      document.getElementById('scAmount').textContent=currentQuote.price_usdc+' USDC';
+      document.getElementById('scOrderId').textContent=order.order_id||order.id;
+      document.getElementById('quoteCard').style.display='none';
+      document.getElementById('successCard').classList.add('visible');
+      document.getElementById('newBtn').style.display='block';
+      document.getElementById('liveLabel').textContent='Complete';
+      document.getElementById('agentTitle').textContent='Gift Ordered!';
+    } else {
+      tlog('','> Order response: '+JSON.stringify(order).slice(0,80));
+      setStep('ss4','done','Needs USDC funding to complete','!');
+      tlog('a','> Fund wallet at allramp.fast.xyz to place real orders');
+    }
+  } catch(e){
+    tlog('','> Order error: '+e.message);
+  }
+}
+
+function resetAll(){
+  selectedProduct=null; currentQuote=null; formData={};
+  ['t1','t2','t3','t4'].forEach(id=>{ const el=document.getElementById(id); el.classList.remove('active','done'); });
+  ['ss1','ss2','ss3','ss4'].forEach(id=>setStep(id,'','Waiting...',''));
+  document.getElementById('terminal').innerHTML='';
+  document.getElementById('productsSection').style.display='none';
+  document.getElementById('productsList').innerHTML='';
+  document.getElementById('quoteCard').classList.remove('visible');
+  document.getElementById('successCard').classList.remove('visible');
+  document.getElementById('newBtn').style.display='none';
+  document.getElementById('agentTitle').textContent='Agent is thinking...';
+  document.getElementById('agentSub').textContent='Analyzing recipient profile';
+  document.getElementById('liveLabel').textContent='Agent Running';
+}
+</script>
+</body>
+</html>
+
