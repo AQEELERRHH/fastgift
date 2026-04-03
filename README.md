@@ -126,7 +126,7 @@ FAST_ADDRESS=        # Your Fast wallet address (fast1...)
 
 ## Demo
 
- [Watch the demo video](https://youtube.com/your-link-here)
+ [Watch the demo video](https://youtu.be/zi5VrXfIwOE)
 
 🔗 [Live app](https://fastgift-1.onrender.com/)
 
