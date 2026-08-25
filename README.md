@@ -1,5 +1,7 @@
 # FastGift 
 
+<img width="1889" height="889" alt="image" src="https://github.com/user-attachments/assets/cb29bf30-94bc-4793-a3bc-12ff8261ce9b" />
+
 > AI-powered gift agent built on Fast Stack. Tell it who you're gifting, what they love, and your budget it finds the perfect gift on Amazon and orders it autonomously.
 
 ---
@@ -15,6 +17,8 @@ FastGift is an agentic commerce application. You describe a person and a budget.
 5. Places the order on Amazon paid autonomously using USDC via Fast Stack
 
 No card. No checkout. No account needed.
+
+<img width="1891" height="893" alt="image" src="https://github.com/user-attachments/assets/6bb0281d-c8d3-495d-a906-6e7b7861ee01" />
 
 ---
 
@@ -34,10 +38,10 @@ No card. No checkout. No account needed.
 
 - Node.js + Express (backend)
 - Vanilla HTML/CSS/JS (frontend)
-- `@fastxyz/sdk` — Fast wallet
-- `@fastxyz/x402-client` — x402 payment protocol
-- `node-fetch` — API calls
-- Claude API (`claude-sonnet-4-20250514`) — AI gift picker
+- `@fastxyz/sdk`  Fast wallet
+- `@fastxyz/x402-client`  x402 payment protocol
+- `node-fetch`  API calls
+- Claude API (`claude-sonnet-4-20250514`)  AI gift picker
 
 ---
 
